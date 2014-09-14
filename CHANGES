@@ -1,3 +1,9 @@
+2.4.6.dav.1
+
+ *) Added -fixPaths option to FastCgiExternalServer to allow URLs 
+    like /path/to/scriptfile.ext/argument1/argument2 on some
+    external FastCGI servers.
+
 2.4.6
 
  *) Fix a bug I introduced in 2.4.4 that broke dynamic application

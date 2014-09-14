@@ -948,6 +948,9 @@ const char *fcgi_config_new_external_server(cmd_parms *cmd, void *dummy, const c
                 return invalid_value(tp, name, fs_path, option, "\"\"");
 #endif
         }
+        else if (strcasecmp(option, "-fixPaths") == 0) {
+            s->fixPaths = 1;
+        }
         else {
             return ap_psprintf(tp, "%s %s: invalid option: %s", name, fs_path, option);
         }

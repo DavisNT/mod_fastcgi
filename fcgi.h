@@ -250,6 +250,7 @@ typedef struct _FastCgiServerInfo {
     const char *group;              /* suexec group arg, AND used in comm
                                      * between RH and PM */
     const char *user;               /* used in comm between RH and PM */
+    int fixPaths;                    /* update PATH_TRANSLATED, PATH_INFO and REDIRECT_URL */
     /* Dynamic FastCGI apps configuration parameters */
     u_long totalConnTime;           /* microseconds spent by the web server
                                      * waiting while fastcgi app performs

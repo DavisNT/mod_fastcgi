@@ -5,7 +5,7 @@
 #ifndef MOD_FASTCGI_H
 #define MOD_FASTCGI_H
 
-#define MOD_FASTCGI_VERSION "2.4.6"
+#define MOD_FASTCGI_VERSION "2.4.6.dav.1"
 
 #define FASTCGI_HANDLER_NAME "fastcgi-script"
 

@@ -830,6 +830,27 @@
                 used to invoke the wrapper. The <CODE>-user</CODE> option must be used together with
                 <CODE>-group</CODE>.
             </DD>
+            <DT>
+                <CODE><STRONG>-fixPaths</STRONG></CODE>
+            </DT>
+            <DD>
+                Allows some external FastCGI servers (e.g. PHP-FPM in some configurations) to serve URLs like 
+                <CODE>http://example.com/path/to/scriptfile.ext/argument1/argument2</CODE>. The <CODE>-fixPaths</CODE> 
+                option strips arguments from <CODE>PATH_TRANSLATED</CODE>, <CODE>PATH_INFO</CODE> and 
+                <CODE>REDIRECT_URL</CODE> FastCGI environment variables leaving only script path and name there.
+            </DD>
+            <DD>
+                When using <CODE>-fixPaths</CODE> with PHP-FPM the following code snipped should be placed in 
+                <CODE>auto_prepend_file</CODE> to allow use of <CODE><A HREF=
+                "http://php.net/manual/en/reserved.variables.server.php">$_SERVER['PATH_INFO']</A></CODE> in PHP scripts: 
+                <BLOCKQUOTE>
+<PRE>
+if(strlen($_SERVER['SCRIPT_URL'])>strlen($_SERVER['PATH_INFO']) 
+  && strncmp($_SERVER['SCRIPT_URL'], $_SERVER['PATH_INFO'], strlen($_SERVER['PATH_INFO']))==0) {
+    $_SERVER['PATH_INFO'] = substr($_SERVER['SCRIPT_URL'], strlen($_SERVER['PATH_INFO']));
+}</PRE>
+                </BLOCKQUOTE>
+            </DD>
         </DL>
         <HR>
         <H2>

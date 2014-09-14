@@ -204,6 +204,48 @@ int fcgi_protocol_queue_env(request_rec *r, fcgi_request *fr, env_status *env)
         else
             add_auth_cgi_vars(r, fr->auth_compat);
 
+        /* Update PATH_TRANSLATED, PATH_INFO and REDIRECT_URL if fixPaths is specified
+         * This may be necesarry for some external FastCGI servers to allow
+         * accessing URLs like /path/to/scriptfile.ext/argument1/argument2 */
+        if (fr->fs->fixPaths) {
+            const char *ptOrig = ap_table_get(r->subprocess_env, "PATH_TRANSLATED");
+            char *pt = ap_pstrdup(r->pool, ptOrig);
+            if(pt!=NULL && *pt!=0) {
+                struct stat myStatBuf;
+
+                if (stat(pt, &myStatBuf) < 0) {
+                    int ptOrigLen = strlen(pt);
+                    int ptLen = ptOrigLen;
+
+                    while(ptLen>0) {
+                        if (ptLen<ptOrigLen && stat(pt, &myStatBuf) == 0) {
+                            /* When valid script file is found, do actual variable update */
+                            int removed = ptOrigLen-ptLen;
+                            
+                            char *pi = ap_pstrdup(r->pool, ap_table_get(r->subprocess_env, "PATH_INFO"));
+                            int piLen = strlen(pi);
+                            char *ru = ap_pstrdup(r->pool, ap_table_get(r->subprocess_env, "REDIRECT_URL"));
+                            int ruLen = strlen(ru);
+
+                            if (piLen >= removed && strcmp(ptOrig+ptLen, pi+piLen-removed)==0) {
+                                pi[piLen-removed] = 0;
+                                ap_table_set(r->subprocess_env, "PATH_INFO", pi);
+                            }
+                            if (ruLen >= removed && strcmp(ptOrig+ptLen, ru+ruLen-removed)==0) {
+                                ru[ruLen-removed] = 0;
+                                ap_table_set(r->subprocess_env, "REDIRECT_URL", ru);
+                            }
+                            ap_table_set(r->subprocess_env, "PATH_TRANSLATED", pt);
+                            break;
+                        }
+                        /* Strip last part of path */
+                        for(; ptLen>0 && pt[ptLen]!='/'; ptLen--);
+                        pt[ptLen] = 0;
+                    }
+                }
+            }
+        }
+
         env->envp = ap_create_environment(r->pool, r->subprocess_env);
         env->pass = PREP;
     }
