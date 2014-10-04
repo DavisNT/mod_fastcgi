@@ -1,3 +1,7 @@
+2.4.6.dav.2
+
+ *) Updated/fixed documentation.
+
 2.4.6.dav.1
 
  *) Added -fixPaths option to FastCgiExternalServer to allow URLs 

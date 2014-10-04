@@ -845,7 +845,8 @@
                 "http://php.net/manual/en/reserved.variables.server.php">$_SERVER['PATH_INFO']</A></CODE> in PHP scripts: 
                 <BLOCKQUOTE>
 <PRE>
-if(strlen($_SERVER['SCRIPT_URL'])>strlen($_SERVER['PATH_INFO']) 
+if(array_key_exists('SCRIPT_URL', $_SERVER)
+  && strlen($_SERVER['SCRIPT_URL'])>strlen($_SERVER['PATH_INFO']) 
   && strncmp($_SERVER['SCRIPT_URL'], $_SERVER['PATH_INFO'], strlen($_SERVER['PATH_INFO']))==0) {
     $_SERVER['PATH_INFO'] = substr($_SERVER['SCRIPT_URL'], strlen($_SERVER['PATH_INFO']));
 }</PRE>
